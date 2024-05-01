@@ -5,7 +5,7 @@ from forms import ContactForm
 # Flask
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my secret'
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 
 # Database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///book.sqlite'
