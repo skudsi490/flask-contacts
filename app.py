@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, request, flash
 from models import db, Contact
 from forms import ContactForm
+from flask_migrate import Migrate
 
 # Flask
 app = Flask(__name__)
@@ -8,10 +9,13 @@ app.config['SECRET_KEY'] = 'my secret'
 app.config['DEBUG'] = True
 
 # Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///book.sqlite'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///book.sqlite'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://contacts_user:contacts_pass@db/contacts_db'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/book'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
+
+migrate = Migrate(app, db)
 
 
 @app.route("/")

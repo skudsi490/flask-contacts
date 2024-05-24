@@ -1,15 +1,9 @@
-from flask import Flask
+# models.py
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///book.sqlite'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/book'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 class Contact(db.Model):
-
-
     __tablename__ = 'contacts'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -19,4 +13,4 @@ class Contact(db.Model):
     phone = db.Column(db.String(20), nullable=True, unique=False)
 
     def __repr__(self):
-        return '<Contacts %r>' % self.name
+        return '<Contact %r>' % self.name
