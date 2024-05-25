@@ -13,6 +13,12 @@ pipeline {
             }
         }
 
+        stage('Test Docker Login') {
+            steps {
+                sh 'docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW'
+            }
+        }
+
         stage('Build Docker Images') {
             steps {
                 script {
