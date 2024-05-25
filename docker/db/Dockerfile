@@ -1,5 +1,3 @@
-# docker/db/Dockerfile
-
 FROM postgres:latest
 
 ENV POSTGRES_DB=contacts_db
