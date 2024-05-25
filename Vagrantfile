@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y openjdk-11-jdk git docker.io
+    apt-get install -y openjdk-11-jdk git docker.io dos2unix
     usermod -aG docker vagrant
     systemctl start docker
     systemctl enable docker
@@ -22,7 +22,6 @@ Vagrant.configure("2") do |config|
     curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
     echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | tee /etc/apt/sources.list.d/jenkins.list > /dev/null
     apt-get update
-    apt-get install -y -t bionic-backports init-system-helpers
     apt-get install -y jenkins
     systemctl start jenkins
     systemctl enable jenkins
@@ -30,6 +29,7 @@ Vagrant.configure("2") do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
+    dos2unix /vagrant/run_containers.sh
     su - vagrant -c 'bash /vagrant/run_containers.sh'
   SHELL
 
