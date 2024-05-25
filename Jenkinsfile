@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id') 
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id')
         DOCKERHUB_REPO = 'skudsi'
     }
 
@@ -15,7 +15,11 @@ pipeline {
 
         stage('Test Docker Login') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                script {
+                    sh '''
+                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                    '''
+                }
             }
         }
 
@@ -31,7 +35,7 @@ pipeline {
         stage('Push Docker Images') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials-id') {
                         docker.image("${env.DOCKERHUB_REPO}/contacts-web").push('latest')
                         docker.image("${env.DOCKERHUB_REPO}/contacts-db").push('latest')
                     }
@@ -41,11 +45,11 @@ pipeline {
 
         stage('Run Docker Containers') {
             steps {
-                sh """
+                sh '''
                 docker rm -f contacts-web contacts-db || true
-                docker run -d --name contacts-db -e POSTGRES_DB=contacts_db -e POSTGRES_USER=contacts_user -e POSTGRES_PASSWORD=contacts_pass ${env.DOCKERHUB_REPO}/contacts-db
-                docker run -d --name contacts-web --link contacts-db:db -p 5000:5000 ${env.DOCKERHUB_REPO}/contacts-web
-                """
+                docker run -d --name contacts-db -e POSTGRES_DB=contacts_db -e POSTGRES_USER=contacts_user -e POSTGRES_PASSWORD=contacts_pass ${DOCKERHUB_REPO}/contacts-db
+                docker run -d --name contacts-web --link contacts-db:db -p 5000:5000 ${DOCKERHUB_REPO}/contacts-web
+                '''
             }
         }
     }
